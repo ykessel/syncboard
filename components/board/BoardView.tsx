@@ -20,15 +20,16 @@ import BoardHeader from './BoardHeader'
 import Column from './Column'
 import CardItem from './Card'
 import AddColumn from './AddColumn'
-import type { Board, Column as ColumnType, Card, PresenceUser } from '@/types'
+import type { Board, Column as ColumnType, Card, PresenceUser, BoardMember } from '@/types'
 
 interface BoardViewProps {
   board: Board
   initialColumns: ColumnType[]
   currentUserId: string
+  boardMembers: BoardMember[]
 }
 
-export default function BoardView({ board, initialColumns, currentUserId }: BoardViewProps) {
+export default function BoardView({ board, initialColumns, currentUserId, boardMembers }: BoardViewProps) {
   const [columns, setColumns] = useState<ColumnType[]>(initialColumns)
   const [activeCard, setActiveCard] = useState<Card | null>(null)
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null)
@@ -241,6 +242,12 @@ export default function BoardView({ board, initialColumns, currentUserId }: Boar
     setColumns(prev => prev.filter(c => c.id !== columnId))
   }, [])
 
+  const removeCardLocal = useCallback((cardId: string) => {
+    setColumns(prev =>
+      prev.map(col => ({ ...col, cards: (col.cards ?? []).filter(c => c.id !== cardId) }))
+    )
+  }, [])
+
   return (
     <div className="flex flex-col h-full">
       <BoardHeader board={board} presence={presence} />
@@ -264,7 +271,9 @@ export default function BoardView({ board, initialColumns, currentUserId }: Boar
                   column={col}
                   boardId={board.id}
                   currentUserId={currentUserId}
+                  boardMembers={boardMembers}
                   onUpdateCard={updateCardLocal}
+                  onRemoveCard={removeCardLocal}
                   onRemoveColumn={removeColumnLocal}
                 />
               ))}
@@ -276,14 +285,27 @@ export default function BoardView({ board, initialColumns, currentUserId }: Boar
           <DragOverlay>
             {activeCard && (
               <div className="rotate-2 opacity-90">
-                <CardItem card={activeCard} isDragging />
+                <CardItem
+                  card={activeCard}
+                  boardMembers={boardMembers}
+                  currentUserId={currentUserId}
+                  isDragging
+                />
               </div>
             )}
             {activeColumnId && (
               <div className="opacity-80">
                 {(() => {
                   const col = columns.find(c => c.id === activeColumnId)
-                  return col ? <Column column={col} boardId={board.id} currentUserId={currentUserId} overlay /> : null
+                  return col ? (
+                    <Column
+                      column={col}
+                      boardId={board.id}
+                      currentUserId={currentUserId}
+                      boardMembers={boardMembers}
+                      overlay
+                    />
+                  ) : null
                 })()}
               </div>
             )}

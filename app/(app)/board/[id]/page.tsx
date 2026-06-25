@@ -28,11 +28,18 @@ export default async function BoardPage({ params }: BoardPageProps) {
 
   if (!board) notFound()
 
+  // Fetch board members for assignee picker and card display
+  const { data: boardMembers } = await supabase
+    .from('board_members')
+    .select('board_id, user_id, role, joined_at, profile:profiles(id, name, avatar_url)')
+    .eq('board_id', id)
+
   return (
     <BoardView
       board={board}
       initialColumns={columns}
       currentUserId={user.id}
+      boardMembers={(boardMembers ?? []) as any}
     />
   )
 }

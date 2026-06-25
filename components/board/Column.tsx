@@ -7,14 +7,16 @@ import { MoreHorizontal, Trash2, GripVertical, Check, X } from 'lucide-react'
 import { deleteColumn, updateColumn } from '@/actions/columns'
 import CardItem from './Card'
 import AddCard from './AddCard'
-import type { Column as ColumnType, Card } from '@/types'
+import type { Column as ColumnType, Card, BoardMember } from '@/types'
 
 interface ColumnProps {
   column: ColumnType
   boardId: string
   currentUserId: string
+  boardMembers: BoardMember[]
   overlay?: boolean
   onUpdateCard?: (cardId: string, updates: Partial<Card>) => void
+  onRemoveCard?: (cardId: string) => void
   onRemoveColumn?: (columnId: string) => void
 }
 
@@ -29,7 +31,7 @@ const COLUMN_COLORS = [
   { label: 'Red', value: '#ef4444' },
 ]
 
-export default function Column({ column, boardId, currentUserId, overlay, onUpdateCard, onRemoveColumn }: ColumnProps) {
+export default function Column({ column, boardId, currentUserId, boardMembers, overlay, onUpdateCard, onRemoveCard, onRemoveColumn }: ColumnProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [editingTitle, setEditingTitle] = useState(false)
   const [titleValue, setTitleValue] = useState(column.title)
@@ -162,7 +164,10 @@ export default function Column({ column, boardId, currentUserId, overlay, onUpda
             <CardItem
               key={card.id}
               card={card}
+              boardMembers={boardMembers}
+              currentUserId={currentUserId}
               onUpdate={onUpdateCard}
+              onDelete={onRemoveCard}
             />
           ))}
         </SortableContext>
