@@ -7,9 +7,10 @@ import { createBoard } from '@/actions/boards'
 interface CreateBoardModalProps {
   colors: string[]
   asCard?: boolean
+  orgId?: string
 }
 
-export default function CreateBoardModal({ colors, asCard }: CreateBoardModalProps) {
+export default function CreateBoardModal({ colors, asCard, orgId }: CreateBoardModalProps) {
   const [open, setOpen] = useState(false)
   const [selectedColor, setSelectedColor] = useState(colors[0])
   const [error, setError] = useState<string | null>(null)
@@ -25,6 +26,7 @@ export default function CreateBoardModal({ colors, asCard }: CreateBoardModalPro
         title: form.get('title') as string,
         description: (form.get('description') as string) || undefined,
         color: selectedColor,
+        org_id: orgId,
       })
       if (result?.error) setError(result.error)
     })

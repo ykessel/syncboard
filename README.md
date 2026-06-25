@@ -75,8 +75,8 @@ Syncboard/
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/your-username/portfolio
-cd portfolio/Syncboard
+git clone https://github.com/ykessel/Syncboard
+cd Syncboard
 npm install
 ```
 

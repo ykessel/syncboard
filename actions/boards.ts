@@ -11,7 +11,7 @@ const boardSchema = z.object({
   color: z.string().regex(/^#[0-9a-fA-F]{6}$/).default('#6366f1'),
 })
 
-export async function createBoard(data: { title: string; description?: string; color?: string }) {
+export async function createBoard(data: { title: string; description?: string; color?: string; org_id?: string }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
@@ -21,7 +21,7 @@ export async function createBoard(data: { title: string; description?: string; c
 
   const { data: board, error } = await supabase
     .from('boards')
-    .insert({ ...parsed.data, owner_id: user.id })
+    .insert({ ...parsed.data, owner_id: user.id, org_id: data.org_id ?? null })
     .select()
     .single()
 
