@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0d0d14;
+  --surface: #14141f;
+  --surface-2: #1c1c2e;
+  --border: rgba(255, 255, 255, 0.08);
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Landing animations ─────────────────────────────── */
+@keyframes dragLoop {
+  0%,100% { transform: translate(0,0) rotate(-2deg); }
+  25%      { transform: translate(118px,14px) rotate(-2deg); }
+  50%      { transform: translate(134px,116px) rotate(-2deg); }
+  75%      { transform: translate(6px,132px) rotate(-2deg); }
+}
+@keyframes drift2 {
+  0%,100% { transform: translate(0,0); }
+  35%     { transform: translate(-54px,86px); }
+  68%     { transform: translate(34px,38px); }
+}
+@keyframes floaty {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-9px); }
+}
+@keyframes pulse-green {
+  0%   { box-shadow: 0 0 0 0 rgba(52,211,153,.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(52,211,153,0); }
+  100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+}
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%     { opacity: .3; }
+}
+@keyframes glowShift {
+  0%,100% { opacity: .55; }
+  50%     { opacity: .9; }
+}
+@keyframes toastIn {
+  0%,8%   { opacity: 0; transform: translateY(8px); }
+  14%,82% { opacity: 1; transform: none; }
+  92%,100%{ opacity: 0; transform: translateY(-8px); }
+}
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.animate-drag-loop  { animation: dragLoop 9s ease-in-out infinite; }
+.animate-drift2     { animation: drift2 11s ease-in-out infinite; }
+.animate-floaty     { animation: floaty 7s ease-in-out infinite; }
+.animate-pulse-green{ animation: pulse-green 2s infinite; }
+.animate-blink      { animation: blink 1.4s infinite; }
+.animate-glow-shift { animation: glowShift 9s ease-in-out infinite; }
+.animate-toast-in   { animation: toastIn 8s ease-in-out infinite; }
+.animate-reveal     { animation: reveal .8s cubic-bezier(.2,.7,.2,1) both; }
+
+/* Board horizontal scroll */
+.board-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+/* Card drag styles */
+.card-dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+/* Smooth transitions */
+.column-transition {
+  transition: transform 200ms ease;
+}
