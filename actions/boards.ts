@@ -19,13 +19,15 @@ export async function createBoard(data: { title: string; description?: string; c
   const parsed = boardSchema.safeParse(data)
   if (!parsed.success) return { error: parsed.error.errors[0].message }
 
-  const { data: board, error } = await supabase
-    .from('boards')
-    .insert({ ...parsed.data, owner_id: user.id, org_id: data.org_id ?? null })
-    .select()
-    .single()
+  const { data: result, error } = await supabase.rpc('create_board_rpc', {
+    p_title: parsed.data.title,
+    p_color: parsed.data.color,
+    p_description: parsed.data.description ?? null,
+    p_org_id: data.org_id ?? null,
+  })
 
   if (error) return { error: error.message }
+  const board = result as { id: string }
 
   revalidatePath('/dashboard')
   redirect(`/board/${board.id}`)
