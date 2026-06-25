@@ -20,17 +20,17 @@ export async function createOrganization(data: { name: string; slug: string }) {
   const parsed = orgSchema.safeParse(data)
   if (!parsed.success) return { error: parsed.error.errors[0].message }
 
-  const { data: org, error } = await supabase
-    .from('organizations')
-    .insert({ ...parsed.data, owner_id: user.id })
-    .select()
-    .single()
+  const { data: result, error } = await supabase.rpc('create_org_rpc', {
+    p_name: parsed.data.name,
+    p_slug: parsed.data.slug,
+  })
 
   if (error) {
     if (error.code === '23505') return { error: 'This slug is already taken' }
     return { error: error.message }
   }
 
+  const org = result as { slug: string }
   revalidatePath('/dashboard')
   redirect(`/dashboard?org=${org.slug}`)
 }
